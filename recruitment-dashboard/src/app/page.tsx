@@ -1,32 +1,11 @@
 "use client"
-
-import type React from "react"
-import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
-import { ArrowRight, Upload, Search, CheckCircle, ChevronRight } from "lucide-react"
-
+import { ArrowRight, Upload, Search, CheckCircle } from "lucide-react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 export default function LandingPage() {
-  const [email, setEmail] = useState("")
   const router = useRouter()
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    try {
-      // Handle demo request submission
-      console.log("Demo requested for:", email)
-      // You would typically send this to your backend or email service
-      // await submitDemoRequest(email) // Add your API call here
-      
-      // Navigate to dashboard
-      router.push("/dashboard")
-    } catch (error) {
-      console.error("Error submitting demo request:", error)
-      // Handle error (you might want to show an error message to the user)
-    }
-  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -35,15 +14,12 @@ export default function LandingPage() {
         <nav className="container mx-auto px-6 py-3 flex justify-between items-center">
           <div className="text-xl font-bold">HireQuality.ai</div>
           <div className="hidden md:flex space-x-4">
-            <a href="#features" className="hover:text-blue-200 transition">
+            <Link href="/features" className="hover:text-blue-200 transition">
               Features
-            </a>
-            <a href="#how-it-works" className="hover:text-blue-200 transition">
-              How It Works
-            </a>
-            <a href="#demo" className="hover:text-blue-200 transition">
-              Request Demo
-            </a>
+            </Link>
+            <Link href="/dashboard" className="hover:text-blue-200 transition">
+              Dashboard
+            </Link>
           </div>
         </nav>
         <div className="container mx-auto px-6 py-16 text-center">
@@ -53,7 +29,7 @@ export default function LandingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            AI-Powered Talent Matching Based on Your Top Performers
+            Talent Matching Based on Your Top Performers
           </motion.h1>
           <motion.p
             className="text-xl md:text-2xl mb-2"
@@ -78,6 +54,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.5 }}
+            onClick={() => router.push("/dashboard")}
           >
             Analyze Candidates
           </motion.button>
@@ -126,7 +103,7 @@ export default function LandingPage() {
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="py-20">
+      <section className="py-20">
         <div className="container mx-auto px-6">
           <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
           <div className="flex flex-col md:flex-row justify-center items-center md:space-x-8">
@@ -159,68 +136,39 @@ export default function LandingPage() {
                   Step {index + 1}: {step.step}
                 </h3>
                 <p className="text-gray-600">{step.description}</p>
-                {index < 2 && <ChevronRight className="hidden md:block w-8 h-8 text-gray-400 mt-4" />}
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Demo Request Section */}
-      <section id="demo" className="py-20 bg-gray-50">
-        <div className="container mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold mb-8">Ready to Transform Your Hiring Process?</h2>
-          <p className="text-xl mb-8">Request a demo and see how AI Talent Match can revolutionize your recruitment.</p>
-          <form onSubmit={handleSubmit} className="max-w-md mx-auto">
-            <div className="flex items-center border-b border-blue-500 py-2">
-              <input
-                className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
-                type="email"
-                placeholder="Enter your email"
-                aria-label="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-              <motion.button
-                className="flex-shrink-0 bg-blue-500 hover:bg-blue-700 border-blue-500 hover:border-blue-700 text-sm border-4 text-white py-1 px-2 rounded"
-                type="submit"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Request Demo
-              </motion.button>
-            </div>
-          </form>
-        </div>
-      </section>
-
       {/* Footer */}
-      <footer className="bg-gray-800 text-white py-8">
+      <footer className="bg-gray-800 text-white py-8 mt-auto">
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-4 md:mb-0">
-              <h3 className="text-2xl font-bold">AI Talent Match</h3>
+              <h3 className="text-2xl font-bold">HireQuality.ai</h3>
               <p className="mt-2">Revolutionizing recruitment with AI</p>
             </div>
             <div className="flex flex-col md:flex-row md:space-x-4">
-              <a href="#" className="hover:text-blue-300 transition">
+              <Link href="/privacy-policy" className="hover:text-blue-300 transition">
                 Privacy Policy
-              </a>
-              <a href="#" className="hover:text-blue-300 transition">
+              </Link>
+              <Link href="/terms-of-service" className="hover:text-blue-300 transition">
                 Terms of Service
-              </a>
+              </Link>
               <a href="mailto:contact@aitalentmatch.com" className="hover:text-blue-300 transition">
                 contact@aitalentmatch.com
               </a>
             </div>
           </div>
           <div className="mt-8 text-center text-sm">
-            <p>&copy; 2023 AI Talent Match. All rights reserved.</p>
-            <p className="mt-2">Created for the AI Recruitment Hackathon</p>
+            <p>&copy; {2025} HireQuality.ai. All rights reserved.</p>
+            <p className="mt-2">Created for the Hacking Agents Hackathon</p>
           </div>
         </div>
       </footer>
     </div>
   )
 }
+

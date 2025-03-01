@@ -1,66 +1,100 @@
-'use client';
+"use client"
 
-import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { ScoreBadge } from '@/components/shared/ScoreBadge'
-import type { Candidate } from '@/data/mockCandidates'
+import { useState } from "react"
+import { motion } from "framer-motion"
+import { ArrowLeft } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { CandidateCard } from "@/components/dashboard/CandidateCard"
+import { CandidateProfile } from "@/components/dashboard/CandidateProfile"
+import { candidates } from "@/data/mockCandidates"
 
-async function fetchCandidates(search: string) {
-  const response = await fetch(`/api/candidates${search ? `?search=${search}` : ''}`)
-  if (!response.ok) {
-    throw new Error('Failed to fetch candidates')
-  }
-  return response.json() as Promise<Candidate[]>
+interface CandidateListProps {
+  roleName: string
+  level: string
+  topPerformers: string[]
+  jobDescription: string
+  onBack: () => void
 }
 
-export function CandidateList() {
-  const [searchTerm, setSearchTerm] = useState('')
+export function CandidateList({ roleName, level, topPerformers, jobDescription, onBack }: CandidateListProps) {
+  const [filter, setFilter] = useState({ search: "", sortBy: "score" })
+  const [selectedCandidate, setSelectedCandidate] = useState<number | null>(null)
 
-  const { data: candidates = [], isLoading, error } = useQuery({
-    queryKey: ['candidates', searchTerm],
-    queryFn: () => fetchCandidates(searchTerm),
-    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
-  })
+  const handleFilterChange = (key: string, value: string) => {
+    setFilter((prev) => ({ ...prev, [key]: value }))
+  }
+
+  const filteredCandidates = candidates
+    .filter(
+      (candidate) =>
+        candidate.name.toLowerCase().includes(filter.search.toLowerCase()) ||
+        candidate.skills.some((skill) => skill.toLowerCase().includes(filter.search.toLowerCase())),
+    )
+    .sort((a, b) => {
+      if (filter.sortBy === "score") {
+        return b.aiScore - a.aiScore
+      } else if (filter.sortBy === "similarity") {
+        return b.similarityScore - a.similarityScore
+      }
+      return 0
+    })
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Candidates</CardTitle>
-        <Input
-          placeholder="Search candidates..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </CardHeader>
-      <CardContent>
-        {isLoading ? (
-          <div className="flex justify-center py-4">Loading...</div>
-        ) : error ? (
-          <div className="text-red-500 py-4">Error loading candidates</div>
-        ) : (
-          <ul className="space-y-4">
-            {candidates.map(candidate => (
-              <li key={candidate.id} className="flex items-center space-x-4 p-2 hover:bg-gray-100 rounded-md">
-                <Avatar>
-                  <AvatarImage src={candidate.avatar} alt={candidate.name} />
-                  <AvatarFallback>{candidate.name.charAt(0)}</AvatarFallback>
-                </Avatar>
-                <div className="flex-1">
-                  <h3 className="font-semibold">{candidate.name}</h3>
-                  <p className="text-sm text-gray-500">{candidate.position}</p>
-                </div>
-                <div className="flex space-x-2">
-                  <ScoreBadge label="AI" score={candidate.aiScore} />
-                  <ScoreBadge label="Match" score={candidate.similarityScore} />
-                </div>
-              </li>
+    <div>
+      <div className="flex items-center mb-6">
+        <Button variant="ghost" onClick={onBack} className="mr-4">
+          <ArrowLeft className="mr-2 h-4 w-4" /> Back
+        </Button>
+        <h2 className="text-2xl font-bold">
+          Top Candidates for {level} {roleName}
+        </h2>
+      </div>
+      {selectedCandidate === null ? (
+        <>
+          <div className="flex flex-wrap gap-4 mb-6">
+            <Input
+              placeholder="Search candidates..."
+              className="max-w-sm"
+              value={filter.search}
+              onChange={(e) => handleFilterChange("search", e.target.value)}
+            />
+            <Select value={filter.sortBy} onValueChange={(value) => handleFilterChange("sortBy", value)}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="score">AI Score</SelectItem>
+                <SelectItem value="similarity">Similarity Score</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            {filteredCandidates.map((candidate) => (
+              <CandidateCard
+                key={candidate.id}
+                candidate={candidate}
+                onClick={() => setSelectedCandidate(candidate.id)}
+              />
             ))}
-          </ul>
-        )}
-      </CardContent>
-    </Card>
+          </motion.div>
+        </>
+      ) : (
+        <CandidateProfile
+          candidate={candidates.find((c) => c.id === selectedCandidate)!}
+          roleName={roleName}
+          level={level}
+          jobDescription={jobDescription}
+          onBack={() => setSelectedCandidate(null)}
+        />
+      )}
+    </div>
   )
 }
+
