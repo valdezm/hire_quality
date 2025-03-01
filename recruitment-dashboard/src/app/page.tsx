@@ -1,19 +1,31 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { ArrowRight, Upload, Search, CheckCircle, ChevronRight } from "lucide-react"
 
+
 export default function LandingPage() {
   const [email, setEmail] = useState("")
+  const router = useRouter()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle demo request submission
-    console.log("Demo requested for:", email)
-    // You would typically send this to your backend or email service
+    
+    try {
+      // Handle demo request submission
+      console.log("Demo requested for:", email)
+      // You would typically send this to your backend or email service
+      // await submitDemoRequest(email) // Add your API call here
+      
+      // Navigate to dashboard
+      router.push("/dashboard")
+    } catch (error) {
+      console.error("Error submitting demo request:", error)
+      // Handle error (you might want to show an error message to the user)
+    }
   }
 
   return (
@@ -212,4 +224,3 @@ export default function LandingPage() {
     </div>
   )
 }
-
