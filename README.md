@@ -99,6 +99,9 @@ This would allow for more nuanced matching (e.g., "This candidate's work experie
 
 ## Assets
 
+![langflow agents](https://github.com/user-attachments/assets/d4772ec3-859f-4a70-9b23-aa8eea8bbfb1)
+
+
 [all resumes zip, Google Drive](https://drive.google.com/file/d/1SHSUe24cNs9IYm9qofH90NehbrE0-6vI/view?usp=drive_link)
 
 [source](https://www.kaggle.com/datasets/snehaanbhawal/resume-dataset)
