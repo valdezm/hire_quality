@@ -1,9 +1,5 @@
 # Hire Quality
 
-[all resumes zip, Google Drive](https://drive.google.com/file/d/1SHSUe24cNs9IYm9qofH90NehbrE0-6vI/view?usp=drive_link)
-
-[source](https://www.kaggle.com/datasets/snehaanbhawal/resume-dataset)
-
 ## Description
 
 ![Architecture](./architecture.png)
@@ -100,3 +96,9 @@ Education
 Skills and certifications
 Projects
 This would allow for more nuanced matching (e.g., "This candidate's work experience is similar to our top performers, even though their educational background is different").
+
+## Assets
+
+[all resumes zip, Google Drive](https://drive.google.com/file/d/1SHSUe24cNs9IYm9qofH90NehbrE0-6vI/view?usp=drive_link)
+
+[source](https://www.kaggle.com/datasets/snehaanbhawal/resume-dataset)
